@@ -72,6 +72,7 @@ interface IClient {
 interface IProductList {
     products: IProduct[];
     preview: string | null;
+    getProduct(productId: string): IProduct;
 }
 ```
 
@@ -128,9 +129,8 @@ export type TClientPersonalData = Pick<IClient, 'email' | 'phoneNumber'>;
 - events: IEvents - экземпляр класса `EventEmitter` для инициации событий при изменении данных
 
 Методы:
-- getProducts(): IProduct[] - метод для добавления всего массива товаров
-- addProduct(product: IProduct): void - метод для добавления одного товара, вызывает событие изменения массива
-- deleteProduct(productId: string): void - метод для удаления товара по id, вызывает событие изменения массива
+<!-- - addProduct(product: IProduct): void - метод для добавления одного товара, вызывает событие изменения массива
+- deleteProduct(productId: string): void - метод для удаления товара по id, вызывает событие изменения массива -->
 - getProduct(productId: string): IProduct - метод для получения одного товара по id
 
 
@@ -143,9 +143,13 @@ export type TClientPersonalData = Pick<IClient, 'email' | 'phoneNumber'>;
 - events: IEvents - экземпляр класса `EventEmitter` для инициации событий при изменении данных
 
 Методы:
-- getProducts(): IProduct[] - метод для добавления всего массива товаров
 - addProduct(product: IProduct): void - метод для добавления одного товара, вызывает событие изменения массива
 - deleteProduct(productId: string): void - метод для удаления товара по id, вызывает событие изменения массива
+- emptyBasket(): void - метод для очистки корзины
+- getCount(products: IProduct[]): number - метод для подсчета количества товаров в корзине
+- getTotal(products: IProduct[]): number - метод для подсчета общей стоимости товаров в корзине
+- isEmpty(count :number): boolean - метод для проверки наличия товаров в корзине для управления состоянием кнопки
+- hasPrice(total: number): boolean - метод для проверки стоимости заказа на случай, если в корзине только один бесценный товар
 
 
 #### Класс ClientData
@@ -161,12 +165,6 @@ export type TClientPersonalData = Pick<IClient, 'email' | 'phoneNumber'>;
 
 Методы:
 - getClientData(): IClient - возвращает данные покупателя
-- setClientData(clientData: IClient): void - сохраняет данные покупателя в полях класса
-- checkClientValidation(data: Record<keyof IClient, string>): boolean - проверяет объект с данными покупателя на валидность
-- checkField(data: { field: keyof TUserPublicInfo; value: string }): boolean - определяет валидность одного из свойств покупателя 
-- checkAddress(value: string): boolean - определяет валидность адреса доставки
-- checkEmail(value: string): boolean - определяет валидность электронной почты
-- checkPhoneNumber(value: string): boolean - определяет валидность телефонного номера
 
 
 ### Слой представления

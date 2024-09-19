@@ -1,6 +1,6 @@
 export interface IProduct {
     id: string;
-    description?: string;
+    description: string;
     image: string;
     title: string;
     category: string;
@@ -8,35 +8,44 @@ export interface IProduct {
 }
 
 export interface IClient {
-    paymentMethod: string;
+    payment: string;
     address: string;
     email: string;
-    phoneNumber: string;
+    phone: string;
 }
 
 
 export interface IProductList {
     products: IProduct[];
     preview: string | null;
+    getProduct(productId: string): IProduct;
 }
 
-export interface IBasket {
-    items: IProduct[]
-    total: number
-    getBasketList(): IProduct[];
+export interface ICart {
+    products: IProduct[];
+    productsForOrder: IProduct[];
     addProduct(product: IProduct): void;
     deleteProduct(productId: string): void;
     emptyBasket(): void;
+    getCount(): number;
+    getTotal(): number;
 }
 
 export interface IClientData {
     getClientData(): IClient;
-    setClientData(clientData: IClient): void;
-    checkClientValidation(data: Record<keyof IClient, string>): boolean;
+}
+
+export interface IOrder {
+    payment: string
+    email: string
+    phone: string
+    address: string
+    total: number
+    items: string[]
 }
 
 export type TProductBaseInfo = Pick<IProduct, 'id' | 'title' | 'price'>;
 
-export type TClientOrderData = Pick<IClient, 'paymentMethod' | 'address'>;
+export type TClientOrderData = Pick<IClient, 'payment' | 'address'>;
 
-export type TClientPersonalData = Pick<IClient, 'email' | 'phoneNumber'>;
+export type TClientPersonalData = Pick<IClient, 'email' | 'phone'>;

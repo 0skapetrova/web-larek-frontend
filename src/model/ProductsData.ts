@@ -1,5 +1,5 @@
 import { IProduct, IProductList } from "../types";
-import { IEvents } from "./base/events";
+import { IEvents } from "../base/EventEmitter";
 
 
 export class ProductsData implements IProductList {
@@ -21,7 +21,7 @@ export class ProductsData implements IProductList {
     }
 
     getProduct(productId: string) {
-        return this._products.find((item) => item._id === productId);
+        return this._products.find((item) => item.id === productId);
     }
 
     set preview(productId: string | null) {

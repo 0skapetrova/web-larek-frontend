@@ -1,6 +1,6 @@
 import { IEvents } from "../base/EventEmitter";
 import { IProduct } from "../types";
-import { cloneTemplate, ensureElement } from "../utils/utils";
+import { ensureElement, formatNumber } from "../utils/utils";
 import { Component } from "./base/Component";
 
 interface ICardActions {
@@ -8,46 +8,77 @@ interface ICardActions {
 }
 
 export class Product extends Component<IProduct> {
-    protected title: HTMLElement;
-    protected category: HTMLElement;
-    protected image: HTMLImageElement;
-    protected description: HTMLElement;    
-    protected price: HTMLElement;
-    protected button: HTMLButtonElement;
+    protected _title: HTMLElement;
+    protected _category: HTMLElement;
+    protected _image: HTMLImageElement;
+    protected _description: HTMLElement;    
+    protected _price: HTMLElement;
+    protected _button: HTMLButtonElement;
     protected events: IEvents;
-    protected element: HTMLElement;
 
-    constructor(template: HTMLTemplateElement, events: IEvents, actions?: ICardActions) {
-        super(template)
+    constructor(protected container: HTMLElement, events: IEvents, actions?: ICardActions) {
+        super(container);
         this.events = events;
-        this.element = cloneTemplate(template);
 
-        this.title = ensureElement<HTMLElement>(`.card__title`, this.element);
-        this.category = ensureElement<HTMLElement>(`.card__category`, this.element);
-        this.image = ensureElement<HTMLImageElement>(`.card__image`, this.element);        
-        this.description = this.element.querySelector(`.card__text`);
-        this.price = ensureElement<HTMLElement>(`.card__price`, this.element);
-        this.button = this.element.querySelector(`.button`);
+        this._title = this.container.querySelector(`.card__title`);
+        this._category = this.container.querySelector(`.card__category`);
+        this._image = this.container.querySelector(`.card__image`);        
+        this._description = this.container.querySelector(`.card__text`);
+        this._price = this.container.querySelector(`.card__price`);
+        this._button = this.container.querySelector(`.card__button`);
 
         if (actions?.onClick) {
-            if (this.button) {
-                this.button.addEventListener('click', actions.onClick);
+            if (this._button) {
+                this._button.addEventListener('click', actions.onClick);
             } else {
-                this.element.addEventListener('click', actions.onClick);
+                this.container.addEventListener('click', actions.onClick);
             }
         }
-    } 
-
-    render(data: Partial<IProduct>): HTMLElement {
-        Object.assign(this, data);
-        return this.element;
     }
 
     set id(value: string) {
-        this.element.dataset.id = value;
+        this.container.dataset.id = value;
     }
 
     get id(): string {
-        return this.element.dataset.id || '';
+        return this.container.dataset.id || '';
     }
+
+    set title(value: string) {
+        this.setText(this._title, value);
+    }
+
+    CategoryСolor: { [key: string]: string } = {
+        'софт-скил': 'card__category_soft',
+        'хард-скил': 'card__category_hard',
+        'дополнительное': 'card__category_additional',
+        'другое': 'card__category_other',
+        'кнопка': 'card__category_button',
+      };
+    
+      set category(value: string) {
+        this.setText(this._category, value);
+        if (this._category) {
+          this.toggleClass(this._category, this.CategoryСolor[value], true);
+        }    
+      }
+
+    set image(value: string) {
+        this.setImage(this._image, value);
+    }
+
+    set description(value: string) {
+        this.setText(this._description, value);
+    }
+
+    set price(value: number) {
+        if(value === null) {
+            this.setText(this._price, 'бесценно');
+        } else {
+            if (value < 10000) {                
+                this.setText(this._price, `${value} синапсов`);
+            }
+            this.setText(this._price, `${formatNumber(value, ' ')} синапсов`);            
+        }        
+    }    
 }

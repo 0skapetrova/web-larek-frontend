@@ -4,7 +4,7 @@ import { Component } from "./base/Component";
 
 interface IPage {
     counter: number;
-    catalog: HTMLElement;
+    catalog: HTMLElement[];
     locked: boolean;
 }
 
@@ -17,10 +17,10 @@ export class Page extends Component<IPage> {
     constructor(container: HTMLElement, protected events: IEvents) {
         super(container);
 
-        this._counter = ensureElement<HTMLElement>('header__basket-counter');
-        this._cartButton = ensureElement<HTMLButtonElement>('header__basket');
-        this._catalog = ensureElement<HTMLElement>('gallery');
-        this._pageWrapper = ensureElement<HTMLElement>('page__wrapper');
+        this._counter = this.container.querySelector('.header__basket-counter');
+        this._cartButton = this.container.querySelector('.header__basket');
+        this._catalog = this.container.querySelector('.gallery');
+        this._pageWrapper = this.container.querySelector('.page__wrapper');
 
         this._cartButton.addEventListener('click', () => {
             this.events.emit('cart:open');

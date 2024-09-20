@@ -49,3 +49,5 @@ export type TProductBaseInfo = Pick<IProduct, 'id' | 'title' | 'price'>;
 export type TClientOrderData = Pick<IClient, 'payment' | 'address'>;
 
 export type TClientPersonalData = Pick<IClient, 'email' | 'phone'>;
+
+export type FormErrors = Partial<Record<keyof IOrder, string>>;

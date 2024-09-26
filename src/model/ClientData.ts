@@ -1,56 +1,65 @@
-import { IClient } from "../types";
+import { FormErrors, IClientData, TClientOrderData, TClientPersonalData } from "../types";
 import { IEvents } from "../base/EventEmitter";
 
-export class ClientData implements IClient {
-    protected _payment: string;
-    protected _address: string;
-    protected _email: string;
-    protected _phone: string;
+export class ClientData implements IClientData {
+    protected _clientData: TClientOrderData & TClientPersonalData
     protected events: IEvents;
+    formErrors: FormErrors = {};
 
     constructor (events: IEvents) {
         this.events = events;
-    }
-
-    getClientData() {
-        return { 
-            payment: this.payment, 
-            address: this.address, 
-            email: this.email, 
-            phone: this.phone
-        }
-    }
+        this._clientData = {
+            payment: '',
+            address: '',
+            email: '',
+            phone: '',
+        };
+    };;
     
-    get payment() {
-        return this._payment;
-    }
+    get clientData() {
+        return this._clientData;
+    };
 
-    get address() {
-        return this._address;
-    }
+    setOrderField(field: keyof TClientOrderData, value: string) {
+        this._clientData[field] = value;
 
-    get email() {
-        return this._email;
-    }
+        if (this.validateOrder()) {
+            return;
+        };
+    };
 
-    get phoneNumber() {
-        return this._phone;
-    }
+    validateOrder() {
+        const errors: typeof this.formErrors = {};
+        if (!this._clientData.payment) {
+            errors.payment = 'Необходимо выбрать способ оплаты';
+        };
+        if (!this._clientData.address) {
+            errors.address = 'Необходимо указать адрес';
+        };
+        this.formErrors = errors;
+        this.events.emit('orderForm:change', this.formErrors);
+        return Object.keys(errors).length === 0;
+    };
 
-    set payment(payment: string) {
-        this._payment = payment;
-    }
+    setContactsField(field: keyof TClientPersonalData, value: string) {
+        this._clientData[field] = value;
+        
+        if (this.validateContacts()) {
+            return;
+        };
+    };
 
-    set address(address: string) {
-        this._address = address;
-    }
-
-    set email(email: string) {
-        this._email = email;
-    }
-
-    set phone(phone: string) {
-        this._phone = phone;
-    }
-
-}
+    validateContacts() {                   
+        const errors: typeof this.formErrors = {};
+        if (!this._clientData.email) {
+            errors.email = 'Необходимо указать email';
+        };
+        if (!this._clientData.phone) {
+            errors.phone = 'Необходимо указать телефон';
+        };
+        this.formErrors = errors;        
+        this.events.emit('contactsForm:change', this.formErrors);
+        
+        return Object.keys(errors).length === 0;
+    };
+};

@@ -7,17 +7,8 @@ export interface IProduct {
     price: number;
 }
 
-export interface IClient {
-    payment: string;
-    address: string;
-    email: string;
-    phone: string;
-}
-
-
 export interface IProductList {
     products: IProduct[];
-    preview: string | null;
     getProduct(productId: string): IProduct;
 }
 
@@ -26,13 +17,15 @@ export interface ICart {
     productsForOrder: IProduct[];
     addProduct(product: IProduct): void;
     deleteProduct(productId: string): void;
-    emptyBasket(): void;
+    emptyCart(): void;
     getCount(): number;
     getTotal(): number;
+    isEmpty(): boolean;
+    inCart(id: string): boolean;
 }
 
 export interface IClientData {
-    getClientData(): IClient;
+    clientData: TClientOrderData & TClientPersonalData;
 }
 
 export interface IOrder {
@@ -44,10 +37,8 @@ export interface IOrder {
     items: string[]
 }
 
-export type TProductBaseInfo = Pick<IProduct, 'id' | 'title' | 'price'>;
+export type TClientOrderData = Pick<IOrder, 'payment' | 'address'>;
 
-export type TClientOrderData = Pick<IClient, 'payment' | 'address'>;
-
-export type TClientPersonalData = Pick<IClient, 'email' | 'phone'>;
+export type TClientPersonalData = Pick<IOrder, 'email' | 'phone'>;
 
 export type FormErrors = Partial<Record<keyof IOrder, string>>;

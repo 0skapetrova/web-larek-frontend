@@ -17,15 +17,15 @@ export class Page extends Component<IPage> {
     constructor(container: HTMLElement, protected events: IEvents) {
         super(container);
 
-        this._counter = this.container.querySelector('.header__basket-counter');
-        this._cartButton = this.container.querySelector('.header__basket');
-        this._catalog = this.container.querySelector('.gallery');
-        this._pageWrapper = this.container.querySelector('.page__wrapper');
+        this._counter = ensureElement<HTMLElement>('.header__basket-counter', container);
+        this._cartButton = ensureElement<HTMLButtonElement>('.header__basket', container);
+        this._catalog = ensureElement<HTMLElement>('.gallery', container);
+        this._pageWrapper = ensureElement<HTMLElement>('.page__wrapper', container);
 
         this._cartButton.addEventListener('click', () => {
             this.events.emit('cart:open');
         });
-    }
+    };
 
     set counter(value: number) {
         this.setText(this._counter, String(value));
@@ -37,10 +37,9 @@ export class Page extends Component<IPage> {
     
     set locked(value: boolean) {
         if (value) {
-            this._pageWrapper.classList.add('page__wrapper_locked');
+            this.toggleClass(this._pageWrapper, 'page__wrapper_locked', true);
         } else {
-            this._pageWrapper.classList.remove('page__wrapper_locked');
+            this.toggleClass(this._pageWrapper, 'page__wrapper_locked', false);
         }
     }
-
 }

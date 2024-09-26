@@ -14,4 +14,8 @@ export class Contacts extends Form<TClientPersonalData> {
     set email(value: string) {
         (this.container.elements.namedItem('email') as HTMLInputElement).value = value;
     }
+
+    set valid(value: boolean) {
+        this.setDisabled(this._submit, !value);
+    }
 }

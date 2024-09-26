@@ -1,3 +1,4 @@
+import { IEvents } from "../base/EventEmitter";
 import { ensureElement, formatNumber } from "../utils/utils";
 import { Component } from "./base/Component";
 
@@ -5,23 +6,19 @@ interface ISuccess {
     total: number;
 }
 
-interface ISuccessActions {
-    onClick: () => void;
-}
-
 export class Success extends Component<ISuccess> {
     protected _close: HTMLButtonElement;
     protected _total: HTMLElement;
+    protected events: IEvents;
 
-    constructor(container: HTMLElement, actions?: ISuccessActions) {
+    constructor(container: HTMLElement, events: IEvents) {
         super(container);
+        this.events = events;
         
-        this._close = container.querySelector('.order-success__close');
-        this._total = container.querySelector('.order-success__description');
+        this._close = ensureElement<HTMLButtonElement>('.order-success__close', container);
+        this._total = ensureElement<HTMLElement>('.order-success__description', container);
 
-        if (actions?.onClick) {
-            this._close.addEventListener('click', actions.onClick);
-        }
+        this._close.addEventListener('click', () => {events.emit('success:submit')})
     }
 
     set total (total: number) {

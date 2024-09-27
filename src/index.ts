@@ -87,7 +87,7 @@ events.on('cart:changed', () => {
                 .render(product));
     cart.render({
         items: productsinCartArray, 
-        total: cartData.getCount(), 
+        total: cartData.getTotal(), 
         index: productsinCartArray, 
         isEmpty: cartData.isEmpty(),
     });
@@ -184,26 +184,33 @@ events.on('modal:close', () => {
 //Отправка данных заказа на сервер
 events.on('contacts:submit', () => {     
     (async () => {
-        const order = await appApi.placeOrder({
-            ...clientData.clientData, 
-            items: cartData.productsForOrder.map(product => product.id), 
-            total: cartData.getTotal()
-        });
-        cartData.emptyCart();
-        modal.render({
-            content: success.render({
-                total: order.total,
-            }),
-        });
+        try {
+            const order = await appApi.placeOrder({
+                ...clientData.clientData, 
+                items: cartData.productsForOrder.map(product => product.id), 
+                total: cartData.getTotal()
+            });
+            cartData.emptyCart();
+            modal.render({
+                content: success.render({
+                    total: order.total,
+                }),
+            });
+        } catch (error) {
+            console.log(error);
+        };
     })();
 });
 
 
 //Загрузка изначальных данных с сервера
 (async () => {
-    const data = await appApi.getProducts();
-    productsData.products = data;   
-    events.emit('products:set');
+    try { 
+        const data = await appApi.getProducts();
+        productsData.products = data;
+    } catch (error) {
+        console.log(error);
+    };
 })();
 
 

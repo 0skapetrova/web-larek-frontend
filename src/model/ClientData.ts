@@ -8,16 +8,20 @@ export class ClientData implements IClientData {
 
     constructor (events: IEvents) {
         this.events = events;
+        this.clearData();
+    };;
+    
+    get clientData() {
+        return this._clientData;
+    };
+
+    clearData() {
         this._clientData = {
             payment: '',
             address: '',
             email: '',
             phone: '',
         };
-    };;
-    
-    get clientData() {
-        return this._clientData;
     };
 
     setOrderField(field: keyof TClientOrderData, value: string) {

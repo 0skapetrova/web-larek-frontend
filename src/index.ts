@@ -98,7 +98,7 @@ events.on('cart:changed', () => {
 events.on('cart:open', () => {
 	modal.render({
         content: cart.render({
-            isEmpty: cartData.isEmpty()
+            isEmpty: cartData.isEmpty(),
         }),
     });
 });
@@ -112,9 +112,9 @@ events.on('productInCart:delete', (data: {id: string}) => {
 events.on('order:open', () => {
     modal.render({
         content: order.render({
-            payment: '',
-            address: '',
-            valid: false,
+            payment: clientData.clientData.payment,
+            address: clientData.clientData.address,
+            valid: clientData.validateOrder(),
             errors: [],
         }),
     });
@@ -130,7 +130,7 @@ events.on(
 
 //Изменение данных заказа
 events.on('orderForm:change', (errors: Partial<TClientOrderData>) => {
-    const { address, payment } = errors;
+    const { address, payment } = errors;    
     order.valid = !payment && !address;
     order.errors = Object.values({ payment, address })
       .filter((i) => !!i)
@@ -141,9 +141,9 @@ events.on('orderForm:change', (errors: Partial<TClientOrderData>) => {
 events.on('order:submit', () => {
     modal.render({
         content: contacts.render({
-            phone: '',
-            email: '',
-            valid: false,
+            phone: clientData.clientData.phone,
+            email: clientData.clientData.email,
+            valid: clientData.validateContacts(),
             errors: [],
         }),
     });
@@ -156,7 +156,6 @@ events.on(
       clientData.setContactsField(data.field, data.value)
     }
   );
-
 
 //Изменение контактных данных покупателя
 events.on('contactsForm:change', (errors: Partial<TClientPersonalData>) => {
@@ -191,6 +190,7 @@ events.on('contacts:submit', () => {
                 total: cartData.getTotal()
             });
             cartData.emptyCart();
+            clientData.clearData();
             modal.render({
                 content: success.render({
                     total: order.total,

@@ -16,19 +16,19 @@ export class Order extends Form<TClientOrderData> {
                 this.onInputChange('payment', button.name)               
             });                
         });
-    }
+    };
 
     set payment(name: string) {
         this._paymentButtons.forEach(button => {
             this.toggleClass(button, 'button_alt-active', button.name === name)
         })
-    }
+    };
 
     set address(value: string) {
         (this.container.elements.namedItem('address') as HTMLInputElement).value = value;
-    }
+    };
 
     set valid(value: boolean) {
         this.setDisabled(this._submit, !value);
-    }
+    };
 }

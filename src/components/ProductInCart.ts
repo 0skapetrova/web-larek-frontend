@@ -10,7 +10,6 @@ export class ProductInCart extends ProductBase {
 
     constructor(protected container: HTMLElement, events: IEvents) {
         super(container, events);
-        this._button = this.container.querySelector(`.card__button`);
     }
 
     addEventListeners(): void {
